@@ -1,34 +1,7 @@
-import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import { Box, Button, Text, TextField, Image, Icon } from '@skynexui/components';
+import { useRouter } from 'next/router';
+import React from 'react';
 import appConfig from '../config.json';
-
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: 'Open Sans', sans-serif;
-      }
-      /* App fit Height */ 
-      html, body, #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */ 
-    `}</style>
-  );
-}
 
 function Titulo(props) {
   const Tag = props.tag || 'h1';
@@ -42,6 +15,34 @@ function Titulo(props) {
                 font-weight: 600;
             }
             `}</style>
+    </>
+  );
+}
+
+function Dropdown(props){
+  console.log(props.userData || {});
+
+  //if (!!props.userData) return <></>;
+
+  return (
+    <>
+      {/* <Icon name='FaSignOutAlt' styleSheet={{"color": "currentColor","display": "inline-block"}}/> */}
+      <Text variant="body4" styleSheet={{
+        marginBottom: '0px',
+        marginTop: '16px',
+        color: appConfig.theme.colors.primary[700],
+      }}>
+        {props.label}
+      </Text>
+
+      <style jsx>{`
+        Text{
+          cursor: pointer;
+        }
+        Text::before {
+          content: '◾';
+        }
+      `}</style>
     </>
   );
 }
@@ -60,11 +61,12 @@ function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-  const username = 'WayneRocha';
+  const [username, setUserName] = React.useState('');
+  const [userProfile, setUserProfile] = React.useState({});
+  const router = useRouter();
 
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -76,7 +78,7 @@ export default function PaginaInicial() {
         <Box
           styleSheet={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems:  'center',
             justifyContent: 'space-between',
             flexDirection: {
               xs: 'column',
@@ -90,6 +92,10 @@ export default function PaginaInicial() {
         >
           {/* Formulário */}
           <Box
+          onSubmit={(event) => {
+            event.preventDefault();
+            router.push('/chat');
+          }}
             as="form"
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -102,6 +108,20 @@ export default function PaginaInicial() {
             </Text>
 
             <TextField
+              value={username}
+              onChange={async(event) => {
+                  const value = event.target.value;
+                  setUserName(value);
+
+                  return;
+                  if (value.length > 2) {
+                    const response = await fetch(`https://api.github.com/users/${value}`);
+                    const userData = await response.json();
+                    setUserProfile((userData.hasOwnProperty('login')) ? userData : {});
+                  }
+                }
+              }
+              placeholder={'GitHub Username'}
               fullWidth
               textFieldColors={{
                 neutral: {
@@ -148,7 +168,10 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={`https://github.com/${username}.png`}
+              src={(userProfile.hasOwnProperty('avatar_url')) ?  
+                userProfile.avatar_url : 
+                'https://i.pinimg.com/originals/11/8e/6f/118e6f39fac9344d6589c84d5ee9e667.png'
+              }
             />
             <Text
               variant="body4"
@@ -159,8 +182,9 @@ export default function PaginaInicial() {
                 borderRadius: '1000px'
               }}
             >
-              {username}
+              {userProfile.login || ''}
             </Text>
+            {/* <Dropdown label={'More infos'} userData={userProfile}/> */}
           </Box>
           {/* Photo Area */}
         </Box>
