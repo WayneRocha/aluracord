@@ -1,6 +1,6 @@
 import { Box, Button, Text, TextField, Image, Icon } from '@skynexui/components';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import appConfig from '../config.json';
 
 function Titulo(props) {
@@ -19,50 +19,45 @@ function Titulo(props) {
   );
 }
 
-function Dropdown(props){
-  console.log(props.userData || {});
-
-  //if (!!props.userData) return <></>;
+function UserInfoText({ icon = '', label, value, link }) {
+  if (!value) return (<></>);
 
   return (
     <>
-      {/* <Icon name='FaSignOutAlt' styleSheet={{"color": "currentColor","display": "inline-block"}}/> */}
-      <Text variant="body4" styleSheet={{
-        marginBottom: '0px',
-        marginTop: '16px',
-        color: appConfig.theme.colors.primary[700],
-      }}>
-        {props.label}
-      </Text>
-
+      <a href={link} target={'_blank'}>
+        <Text
+          variant="body4"
+          styleSheet={{
+            color: appConfig.theme.colors.neutrals[200],
+            backgroundColor: appConfig.theme.colors.neutrals[900],
+            padding: '3px 10px',
+            marginBottom: '2px',
+            borderRadius: '1000px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {icon}{label}: {value}
+        </Text>
+      </a>
       <style jsx>{`
-        Text{
-          cursor: pointer;
+        a {
+          text-decoration: none;
+          margin: 4px;
         }
-        Text::before {
-          content: '◾';
-        }
-      `}</style>
+      `}
+      </style>
     </>
   );
 }
 
-// Componente React
-// function HomePage() {
-//     // JSX
-//     return (
-//         <div>
-//             <GlobalStyle />
-//             <Titulo tag="h2">Boas vindas de volta!</Titulo>
-//             <h2>Discord - Alura Matrix</h2>
-//         </div>
-//     )
-// }
-// export default HomePage
-
 export default function PaginaInicial() {
-  const [username, setUserName] = React.useState('');
-  const [userProfile, setUserProfile] = React.useState({});
+  const [username, setUserName] = useState('');
+  const [userProfile, setUserProfile] = useState({});
+  const [avatarCardVisible, setAvatarCardVisible] = useState(true);
+  const [detailsCardVisible, setDetailsCardVisible] = useState(false);
+  const [detailsBtnEnable, setDetailsBtnEnable] = useState(userProfile.hasOwnProperty('login'));
+
   const router = useRouter();
 
   return (
@@ -78,7 +73,7 @@ export default function PaginaInicial() {
         <Box
           styleSheet={{
             display: 'flex',
-            alignItems:  'center',
+            alignItems: 'center',
             justifyContent: 'space-between',
             flexDirection: {
               xs: 'column',
@@ -92,10 +87,10 @@ export default function PaginaInicial() {
         >
           {/* Formulário */}
           <Box
-          onSubmit={(event) => {
-            event.preventDefault();
-            router.push('/chat');
-          }}
+            onSubmit={(event) => {
+              event.preventDefault();
+              router.push('/chat');
+            }}
             as="form"
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -109,19 +104,19 @@ export default function PaginaInicial() {
 
             <TextField
               value={username}
-              onChange={async(event) => {
-                  const value = event.target.value;
-                  setUserName(value);
+              onChange={async (event) => {
+                setUserName(event.target.value)
 
-                  return;
-                  if (value.length > 2) {
-                    const response = await fetch(`https://api.github.com/users/${value}`);
-                    const userData = await response.json();
-                    setUserProfile((userData.hasOwnProperty('login')) ? userData : {});
-                  }
+                if (username.length > 2) {
+                  const response = await fetch(`https://api.github.com/users/${event.target.value}`);
+                  const userData = await response.json();
+                  const userExists = userData.hasOwnProperty('login');
+
+                  setUserProfile((userExists) ? userData : {});
+                  setDetailsBtnEnable(userExists);
                 }
-              }
-              placeholder={'GitHub Username'}
+              }}
+              placeholder={'Usuario do GitHub'}
               fullWidth
               textFieldColors={{
                 neutral: {
@@ -150,43 +145,170 @@ export default function PaginaInicial() {
           {/* Photo Area */}
           <Box
             styleSheet={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
               maxWidth: '200px',
               padding: '16px',
               backgroundColor: appConfig.theme.colors.neutrals[800],
               border: '1px solid',
               borderColor: appConfig.theme.colors.neutrals[999],
               borderRadius: '10px',
-              flex: 1,
               minHeight: '240px',
             }}
           >
-            <Image
+            <Box styleSheet={{
+              display: (avatarCardVisible) ? 'flex' : 'none',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}>
+              <Image
+                styleSheet={{
+                  borderRadius: '50%',
+                  marginBottom: '16px',
+                  transition: '1s easy-in-out'
+                }}
+                src={(userProfile.hasOwnProperty('avatar_url')) ?
+                  userProfile.avatar_url :
+                  'https://i.pinimg.com/originals/11/8e/6f/118e6f39fac9344d6589c84d5ee9e667.png'
+                }
+              />
+              <Text
+                variant="body4"
+                styleSheet={{
+                  color: appConfig.theme.colors.neutrals[200],
+                  backgroundColor: appConfig.theme.colors.neutrals[900],
+                  padding: '3px 10px',
+                  borderRadius: '1000px'
+                }}
+              >
+                {userProfile.login || ''}
+              </Text>
+              <Button
+                colorVariant="dark"
+                iconName="FaSearch"
+                label="detalhes"
+                rounded="none"
+                variant="tertiary"
+                size="xs"
+                styleSheet={{
+                  marginTop: '10px'
+                }}
+                disabled={!detailsBtnEnable}
+                onClick={() => {
+                  setAvatarCardVisible(false);
+                  setDetailsCardVisible(true);
+                }}
+              />
+            </Box>
+            <Box
               styleSheet={{
-                borderRadius: '50%',
-                marginBottom: '16px',
-              }}
-              src={(userProfile.hasOwnProperty('avatar_url')) ?  
-                userProfile.avatar_url : 
-                'https://i.pinimg.com/originals/11/8e/6f/118e6f39fac9344d6589c84d5ee9e667.png'
-              }
-            />
-            <Text
-              variant="body4"
-              styleSheet={{
-                color: appConfig.theme.colors.neutrals[200],
-                backgroundColor: appConfig.theme.colors.neutrals[900],
-                padding: '3px 10px',
-                borderRadius: '1000px'
-              }}
-            >
-              {userProfile.login || ''}
-            </Text>
-            {/* <Dropdown label={'More infos'} userData={userProfile}/> */}
+                display: (detailsCardVisible) ? 'flex' : 'none',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'space-evenly',
+                overflowX: 'hidden'
+              }}>
+              <Box styleSheet={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '6px'
+              }}>
+                <Image
+                  styleSheet={{
+                    height: '28px',
+                    borderRadius: '50%',
+                    marginRight: '6px'
+                  }}
+                  src={(userProfile.hasOwnProperty('avatar_url')) ?
+                    userProfile.avatar_url :
+                    'https://i.pinimg.com/originals/11/8e/6f/118e6f39fac9344d6589c84d5ee9e667.png'}
+                />
+                <Text
+                  variant="body3"
+                  htmlFor={`https://github.com/${userProfile.login}`}
+                  styleSheet={{
+                    color: appConfig.theme.colors.neutrals["050"],
+                  }}
+                >
+                  {userProfile.login || 'User not Found'}
+                </Text>
+              </Box>
+              <Text
+                variant="body4"
+                styleSheet={{
+                  color: appConfig.theme.colors.neutrals[300],
+                  marginBottom: '6px'
+                }}
+              >
+                {(userProfile.type) ? `${userProfile.type} criado em ${new Date(userProfile.created_at).getFullYear()}` : ''}
+              </Text>
+              <Text
+                variant="body4"
+                styleSheet={{
+                  color: appConfig.theme.colors.neutrals[100],
+                  marginBottom: '12px'
+                }}
+              >
+                {userProfile.bio}
+              </Text>
+              <UserInfoText
+                label={'Followers'}
+                value={userProfile.followers}
+                link={`https://github.com/${userProfile.login}?tab=followers`}
+              />
+              <UserInfoText
+                label={'Following'}
+                value={userProfile.following}
+                link={`https://github.com/${userProfile.login}?tab=following`}
+              />
+              <UserInfoText
+                label={'Repositories'}
+                value={userProfile.public_repos}
+                link={`https://github.com/${userProfile.login}?tab=repositories`}
+              />
+              <UserInfoText
+                label={'Gists'}
+                value={userProfile.public_gists}
+                link={`https://gist.github.com/${userProfile.login}`}
+              />
+              <UserInfoText
+                label={'Email'}
+                value={userProfile.email}
+              />
+              <UserInfoText
+                label={'Blog'}
+                value={userProfile.blog}
+                link={`${userProfile.blog}`}
+              />
+              <UserInfoText
+                label={'Location'}
+                value={userProfile.location}
+                link={`https://www.google.com/maps/place/${userProfile.location}`}
+              />
+              <UserInfoText
+                label={'Company'}
+                value={userProfile.company}
+              />
+              <UserInfoText
+                label={'Twitter'}
+                value={userProfile.twitter_username}
+                link={`https://twitter.com/${userProfile.twitter_username}`}
+              />
+              <Button
+                colorVariant="dark"
+                iconName="FaArrowLeft"
+                label="voltar"
+                rounded="none"
+                variant="tertiary"
+                size="sm"
+                styleSheet={{
+                  margin: '5px auto'
+                }}
+                onClick={() => {
+                  setAvatarCardVisible(true);
+                  setDetailsCardVisible(false);
+                }}
+              />
+            </Box>
           </Box>
-          {/* Photo Area */}
         </Box>
       </Box>
     </>
