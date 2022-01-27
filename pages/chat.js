@@ -1,19 +1,24 @@
-import { Box, Text, TextField, Image, Button } from '@skynexui/components';
+import { Box, Text, TextField, Button } from '@skynexui/components';
 import MessageList from '../src/components/MessageList';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useState , useContext } from 'react';
 import appConfig from '../config.json';
 
 export default function ChatPage() {
+    const router = useRouter();
     const [message, setMessage] = useState('');
     const [messageList, setMessageList] = useState([]);
+
     const sendMessageHandler = () => {
         if (message.length <= 0) return;
-        
+        const { username } = router.query;
+
         setMessageList([
             {
                 id: messageList.length + 1,
+                user: username,
                 content: message.trim(),
-                from: 'WayneRocha',
+                from: username,
                 timestamp: Date.now(),
             },
             ...messageList
@@ -56,7 +61,7 @@ export default function ChatPage() {
                         backgroundColor: appConfig.theme.colors.neutrals[600],
                         flexDirection: 'column',
                         borderRadius: '5px',
-                        padding: '16px',
+                        padding: '16px'
                     }}
                 >
 
