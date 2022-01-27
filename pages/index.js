@@ -1,55 +1,11 @@
-import { Box, Button, Text, TextField, Image, Icon } from '@skynexui/components';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import appConfig from '../config.json';
 
-function Titulo(props) {
-  const Tag = props.tag || 'h1';
-  return (
-    <>
-      <Tag>{props.children}</Tag>
-      <style jsx>{`
-            ${Tag} {
-                color: ${appConfig.theme.colors.neutrals['000']};
-                font-size: 24px;
-                font-weight: 600;
-            }
-            `}</style>
-    </>
-  );
-}
+import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import Title from '../src/components/Title';
+import GithubProfileTag from '../src/components/GithubProfileTag';
 
-function UserInfoText({ icon = '', label, value, link }) {
-  if (!value) return (<></>);
-
-  return (
-    <>
-      <a href={link} target={'_blank'}>
-        <Text
-          variant="body4"
-          styleSheet={{
-            color: appConfig.theme.colors.neutrals[200],
-            backgroundColor: appConfig.theme.colors.neutrals[900],
-            padding: '3px 10px',
-            marginBottom: '2px',
-            borderRadius: '1000px',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {icon}{label}: {value}
-        </Text>
-      </a>
-      <style jsx>{`
-        a {
-          text-decoration: none;
-          margin: 4px;
-        }
-      `}
-      </style>
-    </>
-  );
-}
 
 export default function PaginaInicial() {
   const [username, setUserName] = useState('');
@@ -97,7 +53,7 @@ export default function PaginaInicial() {
               width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
             }}
           >
-            <Titulo tag="h2">Boas vindas!</Titulo>
+            <Title tag="h2">Boas vindas!</Title>
             <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
               {appConfig.name}
             </Text>
@@ -249,45 +205,54 @@ export default function PaginaInicial() {
               >
                 {userProfile.bio}
               </Text>
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'group', type: 'solid'}}
                 label={'Followers'}
                 value={userProfile.followers}
                 link={`https://github.com/${userProfile.login}?tab=followers`}
               />
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'group', type: 'regular'}}
                 label={'Following'}
                 value={userProfile.following}
                 link={`https://github.com/${userProfile.login}?tab=following`}
               />
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'book-bookmark', type: 'regular'}}
                 label={'Repositories'}
                 value={userProfile.public_repos}
                 link={`https://github.com/${userProfile.login}?tab=repositories`}
               />
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'code-block', type: 'regular'}}
                 label={'Gists'}
                 value={userProfile.public_gists}
                 link={`https://gist.github.com/${userProfile.login}`}
               />
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'mail-send', type: 'regular'}}
                 label={'Email'}
                 value={userProfile.email}
               />
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'user-pin', type: 'regular'}}
                 label={'Blog'}
                 value={userProfile.blog}
                 link={`${userProfile.blog}`}
               />
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'map-pin', type: 'regular'}}
                 label={'Location'}
                 value={userProfile.location}
                 link={`https://www.google.com/maps/place/${userProfile.location}`}
               />
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'buildings', type: 'regular'}}
                 label={'Company'}
                 value={userProfile.company}
               />
-              <UserInfoText
+              <GithubProfileTag
+                icon={{name: 'twitter', type: 'logo'}}
                 label={'Twitter'}
                 value={userProfile.twitter_username}
                 link={`https://twitter.com/${userProfile.twitter_username}`}
