@@ -16,7 +16,6 @@ export default function ChatPage() {
         setMessageList([
             {
                 id: messageList.length + 1,
-                user: username,
                 content: message.trim(),
                 from: username,
                 timestamp: Date.now(),

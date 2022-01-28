@@ -9,7 +9,7 @@ export default function MessageList({ messageListState }) {
         <Box
             tag="ul"
             styleSheet={{
-                overflow: 'scroll',
+                overflowX: 'hidden',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
@@ -22,10 +22,11 @@ export default function MessageList({ messageListState }) {
                     if (!message.content.trim()) return <></>;
 
                     return (
-                        <Message 
+                        <Message
+                            isMine={true}
+                            isDeleted={false}
                             key={message.id}
                             id={message.id}
-                            photo={message.user}
                             content={message.content}
                             from={message.from}
                             timestamp={message.timestamp}

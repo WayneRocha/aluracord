@@ -23,7 +23,7 @@ export default function GithubProfileTag({icon, label, value, link }) {
                             name={icon.name}
                             color={appConfig.theme.colors.neutrals[400]}
                             size='.7em'
-                            type={icon.type}>
+                            type={icon.type || 'regular'}>
                         </box-icon>
                         :
                         <></>

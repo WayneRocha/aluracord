@@ -64,7 +64,7 @@ export default function PaginaInicial() {
                 setUserName(event.target.value)
 
                 if (username.length > 2) {
-                  const response = await fetch(`https://api.github.com/users/${event.target.value}`);
+                  const response = await fetch(`https://api.github.com/users/${event.target.value.trim()}`);
                   const userData = await response.json();
                   const userExists = userData.hasOwnProperty('login');
 
@@ -212,42 +212,42 @@ export default function PaginaInicial() {
                 link={`https://github.com/${userProfile.login}?tab=followers`}
               />
               <GithubProfileTag
-                icon={{name: 'group', type: 'regular'}}
+                icon={{name: 'group'}}
                 label={'Following'}
                 value={userProfile.following}
                 link={`https://github.com/${userProfile.login}?tab=following`}
               />
               <GithubProfileTag
-                icon={{name: 'book-bookmark', type: 'regular'}}
+                icon={{name: 'book-bookmark'}}
                 label={'Repositories'}
                 value={userProfile.public_repos}
                 link={`https://github.com/${userProfile.login}?tab=repositories`}
               />
               <GithubProfileTag
-                icon={{name: 'code-block', type: 'regular'}}
+                icon={{name: 'code-block'}}
                 label={'Gists'}
                 value={userProfile.public_gists}
                 link={`https://gist.github.com/${userProfile.login}`}
               />
               <GithubProfileTag
-                icon={{name: 'mail-send', type: 'regular'}}
+                icon={{name: 'mail-send'}}
                 label={'Email'}
                 value={userProfile.email}
               />
               <GithubProfileTag
-                icon={{name: 'user-pin', type: 'regular'}}
+                icon={{name: 'user-pin'}}
                 label={'Blog'}
                 value={userProfile.blog}
                 link={`${userProfile.blog}`}
               />
               <GithubProfileTag
-                icon={{name: 'map-pin', type: 'regular'}}
+                icon={{name: 'map-pin'}}
                 label={'Location'}
                 value={userProfile.location}
                 link={`https://www.google.com/maps/place/${userProfile.location}`}
               />
               <GithubProfileTag
-                icon={{name: 'buildings', type: 'regular'}}
+                icon={{name: 'buildings'}}
                 label={'Company'}
                 value={userProfile.company}
               />

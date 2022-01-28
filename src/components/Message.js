@@ -2,7 +2,7 @@ import { Box, Text, Image, Icon } from '@skynexui/components';
 import React, { useState } from 'react';
 import appConfig from '../../config.json';
 
-export default function Message({messageListState, id, content, from, timestamp, photo}) {
+export default function Message({messageListState, id, content, from, timestamp, isMine, isDeleted=false}) {
     const [messageList, setMessageList] = messageListState;
     const [messageHover, setmessageHover] = useState(false);
 
@@ -34,7 +34,7 @@ export default function Message({messageListState, id, content, from, timestamp,
                         display: 'inline-block',
                         marginRight: '8px',
                     }}
-                    src={`https://github.com/${photo}.png`}
+                    src={`https://github.com/${from}.png`}
                 />
                 <Text tag="strong">
                     {from}
@@ -49,24 +49,29 @@ export default function Message({messageListState, id, content, from, timestamp,
                 >
                     {(new Date(timestamp).toLocaleDateString())}
                 </Text>
-                <Icon 
-                    name='FaPlus'
-                    styleSheet={{
-                        marginLeft: 'auto',
-                        crossAxisAlignment: 'flex-start',
-                        transform: 'rotate(45deg)',
-                        color: (messageHover) ? appConfig.theme.colors.neutrals['400'] : 'transparent',
-                        hover: {
-                            color: appConfig.theme.colors.neutrals['300'],
-                            cursor: 'pointer'
-                        }
-                    }}
-                    onClick={(event) => {
-                        console.log('apagar mensagem ', id);
-                        setMessageList(messageList.filter((msg => msg.id !== id)));
-                    }}/>
+                
+                {
+                    (isMine) ? 
+                    <Icon 
+                        name='FaPlus'
+                        styleSheet={{
+                            marginLeft: 'auto',
+                            crossAxisAlignment: 'flex-start',
+                            transform: 'rotate(45deg)',
+                            color: (messageHover) ? appConfig.theme.colors.neutrals['400'] : 'transparent',
+                            hover: {
+                                color: appConfig.theme.colors.neutrals['300'],
+                                cursor: 'pointer'
+                            }
+                        }}
+                        onClick={() => {
+                            setMessageList(messageList.filter((msg => msg.id !== id)));
+                        }}/>
+                    :
+                    <></>
+                }
             </Box>
-            {content}
+            {(isDeleted) ? 'Mensagem excluída pelo usuario' : content}
         </Text>
     );
 }
