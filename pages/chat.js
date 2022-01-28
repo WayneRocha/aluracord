@@ -65,7 +65,7 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MessageList messageList={messageList} />
+                    <MessageList messageListState={[messageList, setMessageList]} />
 
                     <Box
                         as="form"

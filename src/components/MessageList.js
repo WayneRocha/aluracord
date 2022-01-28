@@ -1,9 +1,10 @@
 import { Box } from '@skynexui/components';
 import Message from './Message';
-import React, { useContext } from 'react';
+import React from 'react';
 import appConfig from '../../config.json';
 
-export default function MessageList({ messageList }) {
+export default function MessageList({ messageListState }) {
+
     return (
         <Box
             tag="ul"
@@ -17,16 +18,18 @@ export default function MessageList({ messageList }) {
             }}
         >
             {
-                messageList.map(message => {
+                messageListState[0].map(message => {
                     if (!message.content.trim()) return <></>;
 
                     return (
-                        <Message
-                            photo={message.user}
+                        <Message 
+                            key={message.id}
                             id={message.id}
+                            photo={message.user}
                             content={message.content}
                             from={message.from}
-                            timestamp={message.timestamp}/>
+                            timestamp={message.timestamp}
+                            messageListState={messageListState}/>
                     );
                 })
             }

@@ -2,12 +2,12 @@ import { Box, Text, Image, Icon } from '@skynexui/components';
 import React, { useState } from 'react';
 import appConfig from '../../config.json';
 
-export default function Message({id, content, from, timestamp, photo}) {
+export default function Message({messageListState, id, content, from, timestamp, photo}) {
+    const [messageList, setMessageList] = messageListState;
     const [messageHover, setmessageHover] = useState(false);
 
     return (
         <Text
-            key={id}
             tag="li"
             styleSheet={{
                 borderRadius: '5px',
@@ -61,8 +61,9 @@ export default function Message({id, content, from, timestamp, photo}) {
                             cursor: 'pointer'
                         }
                     }}
-                    onClick={(id) => {
-                        
+                    onClick={(event) => {
+                        console.log('apagar mensagem ', id);
+                        setMessageList(messageList.filter((msg => msg.id !== id)));
                     }}/>
             </Box>
             {content}
