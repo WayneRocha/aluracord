@@ -2,6 +2,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import appConfig from '../config.json';
 
+import { fetchUser } from '../services/githubAPI';
+
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
 import Title from '../src/components/Title';
 import GithubProfileTag from '../src/components/GithubProfileTag';
@@ -64,8 +66,7 @@ export default function PaginaInicial() {
                 setUserName(event.target.value)
 
                 if (username.length > 2) {
-                  const response = await fetch(`https://api.github.com/users/${event.target.value.trim()}`);
-                  const userData = await response.json();
+                  const userData = await fetchUser(event.target.value);
                   const userExists = userData.hasOwnProperty('login');
 
                   setUserProfile((userExists) ? userData : {});
@@ -87,6 +88,7 @@ export default function PaginaInicial() {
               type='submit'
               label='Entrar'
               fullWidth
+              disabled={!detailsBtnEnable}
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
                 mainColor: appConfig.theme.colors.primary[500],

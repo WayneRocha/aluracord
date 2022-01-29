@@ -1,9 +1,43 @@
 import { Box, Text, Image, Icon } from '@skynexui/components';
+import ReactMarkdown from 'react-markdown';
 import React, { useState } from 'react';
 import appConfig from '../../config.json';
+//import markdownCSS from '../styleSheets/markdown';
 
-export default function Message({messageListState, id, content, from, timestamp, isMine, isDeleted=false}) {
-    const [messageList, setMessageList] = messageListState;
+function getMessageContentComponent(type, data){
+    const types = {
+        'message': content => {
+            return (
+                <>
+                    <ReactMarkdown className='markdown'>{content}</ReactMarkdown>
+                    <style jsx>{markdownCSS}</style>
+                </>
+            );
+        },
+        'sticker': ({url}) => {
+            return <Image src={url}></Image>
+        },
+        'photo': ({url}) => {
+            return <Image src={url}></Image>
+        },
+        'document': () => {
+            return <></>
+        }
+    }
+
+    return types[type](data);
+}
+
+export default function Message(props) {
+    const { 
+        id,
+        content,
+        messageType,
+        from,
+        timestamp,
+        isMine,
+        onDelete
+    } = props;
     const [messageHover, setmessageHover] = useState(false);
 
     return (
@@ -28,8 +62,8 @@ export default function Message({messageListState, id, content, from, timestamp,
             >
                 <Image
                     styleSheet={{
-                        width: '20px',
-                        height: '20px',
+                        width: '35px',
+                        height: '35px',
                         borderRadius: '50%',
                         display: 'inline-block',
                         marginRight: '8px',
@@ -50,8 +84,7 @@ export default function Message({messageListState, id, content, from, timestamp,
                     {(new Date(timestamp).toLocaleDateString())}
                 </Text>
                 
-                {
-                    (isMine) ? 
+                {(isMine) && (
                     <Icon 
                         name='FaPlus'
                         styleSheet={{
@@ -64,14 +97,12 @@ export default function Message({messageListState, id, content, from, timestamp,
                                 cursor: 'pointer'
                             }
                         }}
-                        onClick={() => {
-                            setMessageList(messageList.filter((msg => msg.id !== id)));
-                        }}/>
-                    :
-                    <></>
-                }
+                        onClick={()=> onDelete(id)}/>
+                    )}
             </Box>
-            {(isDeleted) ? 'Mensagem excluída pelo usuario' : content}
+
+            { getMessageContentComponent(messageType, content) }
+
         </Text>
     );
 }

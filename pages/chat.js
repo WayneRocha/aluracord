@@ -1,31 +1,40 @@
-import { Box, Text, TextField, Button } from '@skynexui/components';
-import MessageList from '../src/components/MessageList';
+import React, { useState, use, useContext } from 'react';
 import { useRouter } from 'next/router';
-import React, { useState , useContext } from 'react';
 import appConfig from '../config.json';
+import { getMessages, registerMessage } from '../services/supabase/supabaseAPI';
+import { Box, Text, TextField, Button } from '@skynexui/components';
+import SkeletonMessage from '../src/components/SkeletonMessage';
+import MessageList from '../src/components/MessageList';
+import UserContext from '../src/components/UserContext';
 
 export default function ChatPage() {
     const router = useRouter();
-    const [message, setMessage] = useState('');
-    const [messageList, setMessageList] = useState([]);
-
-    const sendMessageHandler = () => {
+    const { username: loggedUser } = router.query;
+    const [ currentServer, setCurrentServer ] = useState(1);
+    const [ message, setMessage ] = useState('');
+    const [ messageList, setMessageList ] = useState([]);
+    const [ showSkeletons, setShowSkeletons ] = useState(true);
+    const sendMessageHandler = async(server, messageContent, messageType) => {
         if (message.length <= 0) return;
-        const { username } = router.query;
-
-        setMessageList([
-            {
-                id: messageList.length + 1,
-                content: message.trim(),
-                from: username,
-                timestamp: Date.now(),
-            },
-            ...messageList
-        ]);
-        setMessage('');
-    };
     
+        return await registerMessage(server, {
+            from: loggedUser,
+            content: messageContent.trim(),
+            type: messageType,
+        });
+    }
+    const insertMessageInChat = (message) => {  
+        setMessageList([ message, ...messageList ]);
+        setMessage('');
+    }
 
+    React.useEffect(async() => {
+        getMessages(currentServer).then(data => {
+            setMessageList([...data]);
+            setShowSkeletons(false);
+        });
+    }, [currentServer]);
+    
     return (
         <Box
             styleSheet={{
@@ -64,7 +73,22 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MessageList messageListState={[messageList, setMessageList]} />
+                    { showSkeletons && (
+                        <>
+                            <SkeletonMessage/>  
+                            <SkeletonMessage/>  
+                            <SkeletonMessage/>  
+                            <SkeletonMessage/>  
+                            <SkeletonMessage/>
+                        </>
+                    )}
+
+                    { messageList && (
+                        <UserContext.Provider value={router.query.username}>
+                            <MessageList messageListState={[messageList, setMessageList]} />
+                        </UserContext.Provider>
+                    )
+                    }
 
                     <Box
                         as="form"
@@ -91,9 +115,12 @@ export default function ChatPage() {
                                 setMessage(event.target.value)
                             }}
                             onKeyPress={(event) => {
-                                if (event.key === 'Enter'){
+                                if (event.key === 'Enter' && (!event.shiftKey)){
                                     event.preventDefault();
-                                    sendMessageHandler()
+                                    const messageType = 'message';
+                                    sendMessageHandler(currentServer, message, messageType).then((message) => {
+                                        insertMessageInChat(message);
+                                    });
                                 }
                             }}
                         />
@@ -108,7 +135,10 @@ export default function ChatPage() {
                             type="button"
                             onClick={(event) => {
                                 event.preventDefault();
-                                sendMessageHandler();
+                                const messageType = 'message';
+                                sendMessageHandler(currentServer, message, messageType).then((message) => {
+                                    insertMessageInChat(message);
+                                });
                             }}
                         />
                     </Box>
@@ -122,6 +152,7 @@ function Header() {
     return (
         <>
             <Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
+                
                 <Text variant='heading5'>
                     Chat
                 </Text>
