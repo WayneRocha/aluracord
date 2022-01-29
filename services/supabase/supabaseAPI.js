@@ -15,7 +15,8 @@ export async function getMessages(serverId){
 }
 
 export async function registerMessage(serverId, message){
-    const { data } = await supabase.from('messages')
+    const { data, error } = await supabase
+        .from('messages')
         .insert([{
             server_id: serverId,
             content: message.content,
@@ -25,3 +26,13 @@ export async function registerMessage(serverId, message){
     return data[0];
 }
 
+export async function updateMessage(messageId, {content, type}){
+    const { data, error } = await supabase
+        .from('messages')
+        .update({
+            content: content,
+            type: type,
+        })
+        .match({'message_id': messageId});
+    return data[0];
+}
