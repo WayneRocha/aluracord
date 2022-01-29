@@ -2,15 +2,23 @@ import { Box, Text, Image, Icon } from '@skynexui/components';
 import ReactMarkdown from 'react-markdown';
 import React, { useState } from 'react';
 import appConfig from '../../config.json';
-//import markdownCSS from '../styleSheets/markdown';
+import markdownCSS from '../styleSheets/markdown';
 
 function getMessageContentComponent(type, data){
     const types = {
         'message': content => {
             return (
                 <>
-                    <ReactMarkdown className='markdown'>{content}</ReactMarkdown>
+                    <ReactMarkdown className='markdown-body' style={{backgroundColor: '#fff'}}>{content}</ReactMarkdown>
                     <style jsx>{markdownCSS}</style>
+                    <style jsx>{`
+                        .markdown-body {
+                            background-color: ${appConfig.theme.colors.neutrals[600]};
+                        }
+                        .markdown-body:hover {
+                            background-color: ${appConfig.theme.colors.neutrals[700]};
+                        }
+                    `}</style>
                 </>
             );
         },
