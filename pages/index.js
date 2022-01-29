@@ -75,6 +75,7 @@ export default function PaginaInicial() {
               }}
               placeholder={'Usuario do GitHub'}
               fullWidth
+              autoComplete="off"
               textFieldColors={{
                 neutral: {
                   textColor: appConfig.theme.colors.neutrals[200],
