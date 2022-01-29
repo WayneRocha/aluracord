@@ -92,7 +92,7 @@ export default function Message(props) {
                     {(new Date(timestamp).toLocaleDateString())}
                 </Text>
                 
-                {(isMine) && (
+                {(isMine && content != '*`Mensagem Deletada`*') && (
                     <Icon 
                         name='FaPlus'
                         styleSheet={{

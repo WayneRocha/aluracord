@@ -1,4 +1,4 @@
-import { Box, Text} from '@skynexui/components';
+import { Box, Text } from '@skynexui/components';
 import appConfig from '../../config.json';
 /* import 'boxicons'; */
 

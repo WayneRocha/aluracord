@@ -1,11 +1,11 @@
-import React, { useState, use, useContext } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 import { getMessages, registerMessage } from '../services/supabase/supabaseAPI';
 import { Box, Text, TextField, Button } from '@skynexui/components';
 import SkeletonMessage from '../src/components/SkeletonMessage';
 import MessageList from '../src/components/MessageList';
-import UserContext from '../src/components/UserContext';
+import { UserContext } from '../src/components/Contexts';
 
 export default function ChatPage() {
     const router = useRouter();

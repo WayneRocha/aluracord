@@ -3,11 +3,11 @@ import { Box } from '@skynexui/components';
 import Message from './Message';
 import appConfig from '../../config.json';
 import { updateMessage } from '../../services/supabase/supabaseAPI';
-import userContext from './UserContext';
+import { UserContext } from './Contexts';
 
 export default function MessageList({ messageListState }) {
     const [messageList, setMessageList] = messageListState;
-    const currentUser = useContext(userContext);
+    const currentUser = useContext(UserContext);
 
     return (
         <Box
