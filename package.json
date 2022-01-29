@@ -8,6 +8,7 @@
   "dependencies": {
     "@skynexui/components": "^1.23.6",
     "@supabase/supabase-js": "^1.29.4",
+    "boxicons": "^2.1.1",
     "github-markdown-css": "^5.1.0",
     "next": "^12.0.8",
     "react": "^17.0.2",
