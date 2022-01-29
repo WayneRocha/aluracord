@@ -9,7 +9,7 @@ function getMessageContentComponent(type, data){
         'message': content => {
             return (
                 <>
-                    <ReactMarkdown className='markdown-body' style={{backgroundColor: '#fff'}}>{content}</ReactMarkdown>
+                    <ReactMarkdown className='markdown-body'>{content}</ReactMarkdown>
                     <style jsx>{markdownCSS}</style>
                     <style jsx>{`
                         .markdown-body {
