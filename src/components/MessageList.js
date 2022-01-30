@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
+import { UserContext } from './Contexts';
+import { updateMessage } from '../../services/supabase/supabaseAPI';
 import { Box } from '@skynexui/components';
 import Message from './Message';
 import appConfig from '../../config.json';
-import { updateMessage } from '../../services/supabase/supabaseAPI';
-import { UserContext } from './Contexts';
 
 export default function MessageList({ messageListState }) {
     const [messageList, setMessageList] = messageListState;
@@ -36,6 +36,7 @@ export default function MessageList({ messageListState }) {
                                 const messageIndex = messageList.findIndex((message => message.message_id === id));
 
                                 messageList[messageIndex].content = '*`Mensagem Deletada`*';
+                                messageList[messageIndex].type = 'markdown';
                                 updateMessage(messageList[messageIndex].message_id, {
                                     content: messageList[messageIndex].content,
                                     type: messageList[messageIndex].type

@@ -1,8 +1,8 @@
-import React from "react";
+import { createContext } from "react";
 
-const UserContext = React.createContext();
-const ServerContext = React.createContext();
-const GithubProfileContext = React.createContext();
+const UserContext = createContext();
+const ServerContext = createContext();
+const GithubProfileContext = createContext();
  
 export {
     UserContext,

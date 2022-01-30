@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
-import { getMessages, registerMessage, addNewMessageListener } from '../services/supabase/supabaseAPI';
+import {
+    getMessages,
+    registerMessage,
+    addMessageListeners
+} from '../services/supabase/supabaseAPI';
 import { Box, Text, TextField, Button } from '@skynexui/components';
 import SkeletonMessage from '../src/components/SkeletonMessage';
 import MessageList from '../src/components/MessageList';
@@ -25,19 +29,32 @@ export default function ChatPage() {
         });
     }
     const insertMessageInChat = (message) => {  
+        console.log('inserindo no chat => ', message);
         setMessageList((messageList) => {
             return [ message, ...messageList ];
         });
         setMessage('');
     }
 
-    React.useEffect(async() => {
+    useEffect(async() => {
         getMessages(currentServer).then(data => {
             setMessageList([...data]);
             setShowSkeletons(false);
         });
-        addNewMessageListener((newMessage) => {
-            insertMessageInChat(newMessage);
+
+        addMessageListeners({
+            "INSERT" : newMessage => {
+                console.log('uhhu! inseriu => ' + newMessage);
+                insertMessageInChat(newMessage);
+            },
+            "UPDATE": messageUpdate => {
+                console.log('uhhu! atualizou => ' + messageUpdate);
+                setMessageList((liveMessageList) => {
+                    const messageIndex = liveMessageList.findIndex((message => message.message_id === messageUpdate.message_id));
+                    liveMessageList[messageIndex] = messageUpdate;
+                    return [...liveMessageList];
+                });
+            }
         });
     }, [currentServer]);
     

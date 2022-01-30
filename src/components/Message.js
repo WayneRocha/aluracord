@@ -2,13 +2,16 @@ import { Box, Text, Image, Icon } from '@skynexui/components';
 import { fetchUser } from '../../services/githubAPI';
 import GithubProfileCard from '../components/GithubProfileCard';
 import ReactMarkdown from 'react-markdown';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import appConfig from '../../config.json';
 import markdownCSS from '../styleSheets/markdown';
 
 function getMessageContentComponent(type, data) {
     const types = {
         'message': content => {
+            return content;
+        },
+        'markdown': content => {
             return (
                 <>
                     <ReactMarkdown className='markdown-body'>{content}</ReactMarkdown>
@@ -27,10 +30,10 @@ function getMessageContentComponent(type, data) {
         'sticker': content => {
             return <img src={content} style={{width: '250px', maxWidth: '50vw'}}></img>
         },
-        'photo': ({ url }) => {
-            return <Image src={url}></Image>
+        'photo': content => {
+            return <></>;
         },
-        'document': () => {
+        'document': content => {
             return <></>
         }
     }

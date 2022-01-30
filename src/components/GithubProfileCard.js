@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import appConfig from '../../config.json';
 import { GithubProfileContext } from './Contexts';
 import GithubProfileTag from './GithubProfileTag';

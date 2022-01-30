@@ -1,5 +1,4 @@
-import React from 'react';
-import ContentLoader from "react-content-loader"
+import ContentLoader from "react-content-loader";
 import appConfig from '../../config.json';
 
 const SkeletonMessage = (props) => (
