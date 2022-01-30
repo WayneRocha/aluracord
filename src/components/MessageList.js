@@ -25,7 +25,7 @@ export default function MessageList({ messageListState }) {
                 messageList.map(message => {
                     return (
                         <Message
-                            isMine={message.from === currentUser}
+                            isMine={message.from.toLowerCase() === currentUser.toLowerCase()}
                             key={message.message_id}
                             id={message.message_id}
                             content={message.content}
@@ -40,9 +40,9 @@ export default function MessageList({ messageListState }) {
                                     content: messageList[messageIndex].content,
                                     type: messageList[messageIndex].type
                                 })
-                                .then(data => {
-                                    console.log(data);
-                                });
+                                    .then(data => {
+                                        console.log(data);
+                                    });
                                 setMessageList([...messageList]);
                             }}
                         />
