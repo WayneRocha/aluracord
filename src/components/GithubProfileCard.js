@@ -5,8 +5,8 @@ import GithubProfileTag from './GithubProfileTag';
 import { Box, Text, Image } from '@skynexui/components';
 
 
-export default function GithubProfileCard() {
-    const profile = useContext(GithubProfileContext);
+export default function GithubProfileCard({profileObj}) {
+    const profile = (profileObj) ? profileObj : useContext(GithubProfileContext);
 
     return (
         <Box>
@@ -25,7 +25,7 @@ export default function GithubProfileCard() {
                 }}>
                     <Image
                         styleSheet={{
-                            height: '28px',
+                            height: '40px',
                             borderRadius: '50%',
                             marginRight: '6px'
                         }}
@@ -35,9 +35,11 @@ export default function GithubProfileCard() {
                     />
                     <Text
                         variant="body3"
+                        tag='strong'
                         htmlFor={`https://github.com/${profile.login}`}
                         styleSheet={{
                             color: appConfig.theme.colors.neutrals["050"],
+                            fontSize: '1.1rem'
                         }}
                     >
                         {profile.login || 'User not Found'}

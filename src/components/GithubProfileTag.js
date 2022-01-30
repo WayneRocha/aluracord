@@ -1,6 +1,6 @@
+/* import 'boxicons';       window is not defined error*/    
 import { Box, Text } from '@skynexui/components';
 import appConfig from '../../config.json';
-import 'boxicons';
 
 export default function GithubProfileTag({icon, label, value, link }) {
     if (!value) return (<></>);
