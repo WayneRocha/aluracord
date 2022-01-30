@@ -30,11 +30,11 @@ function GlobalStyle() {
         }
 
         ::-webkit-scrollbar-track {
-          background: ${appConfig.theme.colors.neutrals["800"]};        /* color of the tracking area */
+          background: ${appConfig.theme.colors.neutrals["700"]};        /* color of the tracking area */
         }
 
         ::-webkit-scrollbar-thumb {
-          background-color: ${appConfig.theme.colors.neutrals["400"]};    /* color of the scroll thumb */
+          background-color: ${appConfig.theme.colors.neutrals["900"]};    /* color of the scroll thumb */
           border-radius: 24px;       /* roundness of the scroll thumb */
         }
         /* ./App fit Height */ 
