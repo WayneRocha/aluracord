@@ -3,6 +3,13 @@ import API from '../supabase/supabase.json';
 
 // Create a single supabase client for interacting with your database
 const supabase = createClient(API.URL, API.ANON_PUBLIC_KEY);
+const addMessageListener = (on, callBack) => {
+    supabase.from('messages')
+        .on(on, data => {
+            callBack(data.new);
+        })
+        .subscribe();
+};
 
 export async function getMessages(serverId){
 
@@ -35,4 +42,12 @@ export async function updateMessage(messageId, {content, type}){
         })
         .match({'message_id': messageId});
     return data[0];
+}
+
+export function addNewMessageListener(onNewMessage){
+    addMessageListener('INSERT', onNewMessage);
+}
+
+export function addUpdateMessageListener(onUpdateMessage){
+    addMessageListener('UPDATE', onUpdateMessage);
 }

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
-import { getMessages, registerMessage } from '../services/supabase/supabaseAPI';
+import { getMessages, registerMessage, addNewMessageListener } from '../services/supabase/supabaseAPI';
 import { Box, Text, TextField, Button } from '@skynexui/components';
 import SkeletonMessage from '../src/components/SkeletonMessage';
 import MessageList from '../src/components/MessageList';
+import ButtonSendSticker from '../src/components/ButtonSendSticker';
 import { UserContext } from '../src/components/Contexts';
 
 export default function ChatPage() {
@@ -14,17 +15,19 @@ export default function ChatPage() {
     const [ message, setMessage ] = useState('');
     const [ messageList, setMessageList ] = useState([]);
     const [ showSkeletons, setShowSkeletons ] = useState(true);
-    const sendMessageHandler = async(server, messageContent, messageType) => {
-        if (message.length <= 0) return;
-    
-        return await registerMessage(server, {
+    const sendMessageHandler = (server, messageContent, messageType) => {
+        if (messageContent.length <= 0) return;
+
+        registerMessage(server, {
             from: loggedUser,
             content: messageContent.trim(),
             type: messageType,
         });
     }
     const insertMessageInChat = (message) => {  
-        setMessageList([ message, ...messageList ]);
+        setMessageList((messageList) => {
+            return [ message, ...messageList ];
+        });
         setMessage('');
     }
 
@@ -32,6 +35,9 @@ export default function ChatPage() {
         getMessages(currentServer).then(data => {
             setMessageList([...data]);
             setShowSkeletons(false);
+        });
+        addNewMessageListener((newMessage) => {
+            insertMessageInChat(newMessage);
         });
     }, [currentServer]);
     
@@ -94,7 +100,7 @@ export default function ChatPage() {
                         as="form"
                         styleSheet={{
                             display: 'flex',
-                            alignItems: 'center'
+                            alignItems: 'center',
                         }}
                     >
                         <TextField
@@ -118,10 +124,14 @@ export default function ChatPage() {
                                 if (event.key === 'Enter' && (!event.shiftKey)){
                                     event.preventDefault();
                                     const messageType = 'message';
-                                    sendMessageHandler(currentServer, message, messageType).then((message) => {
-                                        insertMessageInChat(message);
-                                    });
+                                    sendMessageHandler(currentServer, message, messageType);
                                 }
+                            }}
+                        />
+                        <ButtonSendSticker
+                            onStickerClick={(stickerUrl) => {
+                                const messageType = 'sticker';
+                                sendMessageHandler(currentServer, stickerUrl, messageType);
                             }}
                         />
                         <Button
@@ -131,14 +141,15 @@ export default function ChatPage() {
                                 mainColorLight: appConfig.theme.colors.primary[400],
                                 mainColorStrong: appConfig.theme.colors.primary[600],
                             }}
+                            styleSheet={{
+                                margin: 'auto 10px'
+                            }}
                             iconName="FaPaperPlane"
                             type="button"
                             onClick={(event) => {
                                 event.preventDefault();
                                 const messageType = 'message';
-                                sendMessageHandler(currentServer, message, messageType).then((message) => {
-                                    insertMessageInChat(message);
-                                });
+                                sendMessageHandler(currentServer, message, messageType);
                             }}
                         />
                     </Box>

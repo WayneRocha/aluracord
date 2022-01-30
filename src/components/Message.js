@@ -24,8 +24,8 @@ function getMessageContentComponent(type, data) {
                 </>
             );
         },
-        'sticker': ({ url }) => {
-            return <Image src={url}></Image>
+        'sticker': content => {
+            return <img src={content} style={{width: '250px', maxWidth: '50vw'}}></img>
         },
         'photo': ({ url }) => {
             return <Image src={url}></Image>
@@ -39,6 +39,15 @@ function getMessageContentComponent(type, data) {
 }
 
 export default function Message(props) {
+    const {
+        id,
+        content,
+        messageType,
+        from,
+        timestamp,
+        isMine,
+        onDelete
+    } = props;
     const [wrapCard, setWrapCard] = useState(false);
     const [githubProfile, setGithubProfile] = useState({});
     const [messageHover, setmessageHover] = useState(false);
@@ -52,16 +61,7 @@ export default function Message(props) {
         setGithubProfile(profile);
         setWrapCard(!wrapCard);
     }
-    const {
-        id,
-        content,
-        messageType,
-        from,
-        timestamp,
-        isMine,
-        onDelete
-    } = props;
-    
+
     return (
         <>
             <Text

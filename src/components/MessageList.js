@@ -39,10 +39,7 @@ export default function MessageList({ messageListState }) {
                                 updateMessage(messageList[messageIndex].message_id, {
                                     content: messageList[messageIndex].content,
                                     type: messageList[messageIndex].type
-                                })
-                                    .then(data => {
-                                        console.log(data);
-                                    });
+                                });
                                 setMessageList([...messageList]);
                             }}
                         />
