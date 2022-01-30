@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import appConfig from '../config.json';
 
 import { fetchUser } from '../services/githubAPI';
