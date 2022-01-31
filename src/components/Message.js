@@ -28,7 +28,7 @@ function getMessageContentComponent(type, data) {
             );
         },
         'sticker': content => {
-            return <img src={content} style={{width: '250px', maxWidth: '50vw'}}></img>
+            return <img src={content} style={{width: '250px'}}></img>
         },
         'photo': content => {
             return <></>;

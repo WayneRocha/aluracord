@@ -1,63 +1,16 @@
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import appConfig from '../config.json';
-import {
-    getMessages,
-    registerMessage,
-    addMessageListeners
-} from '../services/supabase/supabaseAPI';
-import { Box, Text, TextField, Button } from '@skynexui/components';
-import SkeletonMessage from '../src/components/SkeletonMessage';
-import MessageList from '../src/components/MessageList';
-import ButtonSendSticker from '../src/components/ButtonSendSticker';
-import { UserContext } from '../src/components/Contexts';
+import { ChatContext } from '../src/components/Contexts';
+import ChatContainer from '../src/components/ChatContainer';
+import ServersBar from "../src/components/ServersBar";
+import { Box, Image, Button, Text } from '@skynexui/components';
 
 export default function ChatPage() {
     const router = useRouter();
     const { username: loggedUser } = router.query;
-    const [ currentServer, setCurrentServer ] = useState(1);
-    const [ message, setMessage ] = useState('');
-    const [ messageList, setMessageList ] = useState([]);
-    const [ showSkeletons, setShowSkeletons ] = useState(true);
-    const sendMessageHandler = (server, messageContent, messageType) => {
-        if (messageContent.length <= 0) return;
+    const [currentServer, setCurrentServer] = useState({id: 1, name: 'ImersãoReact'});
 
-        registerMessage(server, {
-            from: loggedUser,
-            content: messageContent.trim(),
-            type: messageType,
-        });
-    }
-    const insertMessageInChat = (message) => {  
-        console.log('inserindo no chat => ', message);
-        setMessageList((messageList) => {
-            return [ message, ...messageList ];
-        });
-        setMessage('');
-    }
-
-    useEffect(async() => {
-        getMessages(currentServer).then(data => {
-            setMessageList([...data]);
-            setShowSkeletons(false);
-        });
-
-        addMessageListeners({
-            "INSERT" : newMessage => {
-                console.log('uhhu! inseriu => ' + newMessage);
-                insertMessageInChat(newMessage);
-            },
-            "UPDATE": messageUpdate => {
-                console.log('uhhu! atualizou => ' + messageUpdate);
-                setMessageList((liveMessageList) => {
-                    const messageIndex = liveMessageList.findIndex((message => message.message_id === messageUpdate.message_id));
-                    liveMessageList[messageIndex] = messageUpdate;
-                    return [...liveMessageList];
-                });
-            }
-        });
-    }, [currentServer]);
-    
     return (
         <Box
             styleSheet={{
@@ -71,6 +24,7 @@ export default function ChatPage() {
             <Box
                 styleSheet={{
                     display: 'flex',
+                    justifyContent: 'space-between',
                     flexDirection: 'column',
                     flex: 1,
                     boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
@@ -82,108 +36,51 @@ export default function ChatPage() {
                     padding: '32px',
                 }}
             >
-                <Header />
-                <Box
-                    styleSheet={{
-                        position: 'relative',
-                        display: 'flex',
-                        flex: 1,
-                        height: '80%',
-                        backgroundColor: appConfig.theme.colors.neutrals[600],
-                        flexDirection: 'column',
-                        borderRadius: '5px',
-                        padding: '16px'
-                    }}
-                >
-
-                    { showSkeletons && (
-                        <>
-                            <SkeletonMessage/>  
-                            <SkeletonMessage/>  
-                            <SkeletonMessage/>  
-                            <SkeletonMessage/>  
-                            <SkeletonMessage/>
-                        </>
-                    )}
-
-                    { messageList && (
-                        <UserContext.Provider value={router.query.username}>
-                            <MessageList messageListState={[messageList, setMessageList]} />
-                        </UserContext.Provider>
-                    )
-                    }
-
+                <Header username={loggedUser}
+                    style={{
+                        height: '10%'
+                    }}/>
+                <ChatContext.Provider value={{username: loggedUser, server: currentServer}}>
                     <Box
-                        as="form"
                         styleSheet={{
+                            height: '90%',
                             display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <TextField
-                            placeholder="Insira sua mensagem aqui..."
-                            value={message}
-                            type="textarea"
-                            styleSheet={{
-                                width: '100%',
-                                border: '0',
-                                resize: 'none',
-                                borderRadius: '5px',
-                                padding: '6px 8px',
-                                backgroundColor: appConfig.theme.colors.neutrals[800],
-                                marginRight: '12px',
-                                color: appConfig.theme.colors.neutrals[200],
-                            }}
-                            onChange={(event) => {
-                                setMessage(event.target.value)
-                            }}
-                            onKeyPress={(event) => {
-                                if (event.key === 'Enter' && (!event.shiftKey)){
-                                    event.preventDefault();
-                                    const messageType = 'message';
-                                    sendMessageHandler(currentServer, message, messageType);
-                                }
-                            }}
-                        />
-                        <ButtonSendSticker
-                            onStickerClick={(stickerUrl) => {
-                                const messageType = 'sticker';
-                                sendMessageHandler(currentServer, stickerUrl, messageType);
-                            }}
-                        />
-                        <Button
-                            buttonColors={{
-                                contrastColor: appConfig.theme.colors.neutrals["000"],
-                                mainColor: appConfig.theme.colors.primary[500],
-                                mainColorLight: appConfig.theme.colors.primary[400],
-                                mainColorStrong: appConfig.theme.colors.primary[600],
-                            }}
-                            styleSheet={{
-                                margin: 'auto 10px'
-                            }}
-                            iconName="FaPaperPlane"
-                            type="button"
-                            onClick={(event) => {
-                                event.preventDefault();
-                                const messageType = 'message';
-                                sendMessageHandler(currentServer, message, messageType);
-                            }}
-                        />
+                        }}>
+                            <ServersBar
+                                onServerChange={(server) => {
+                                    setCurrentServer(server);
+                                }}/>
+                            <ChatContainer />
                     </Box>
-                </Box>
+                </ChatContext.Provider>
             </Box>
         </Box>
     )
 }
 
-function Header() {
+function Header({username}) {
     return (
         <>
             <Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
-                
-                <Text variant='heading5'>
-                    Chat
-                </Text>
+                <Box styleSheet={{display: 'flex', alignItems: 'center'}} title='Seu perfil'>
+                    <Image
+                        styleSheet={{
+                            height: '50px',
+                            borderRadius: '50%',
+                            marginRight: '16px'
+                        }}
+                        src={`https://github.com/${username}.png`}
+                    />
+                    <Text
+                        variant="heading3"
+                        tag='strong'
+                        styleSheet={{
+                            color: appConfig.theme.colors.neutrals["050"],
+                        }}
+                    >
+                        {username}
+                    </Text>
+                </Box>
                 <Button
                     variant='tertiary'
                     colorVariant='neutral'

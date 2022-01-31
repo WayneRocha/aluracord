@@ -4,6 +4,14 @@ import API from '../supabase/supabase.json';
 // Create a single supabase client for interacting with your database
 const supabase = createClient(API.URL, API.ANON_PUBLIC_KEY);
 
+export async function getServers(){
+
+    const { data } = await supabase.from('servers')
+        .select('*');
+        
+    return data;
+}
+
 export async function getMessages(serverId){
 
     const { data } = await supabase.from('messages')
@@ -37,8 +45,8 @@ export async function updateMessage(messageId, {content, type}){
     return data[0];
 }
 
-export function addMessageListeners(listeners){
-    supabase.from('messages')
+export function addMessageListeners(serverId, listeners){
+    supabase.from(`messages:server_id=eq.${serverId}`)
         .on('*', (data) => {
             if (listeners.hasOwnProperty('*'))
                 listeners['*'](data.new);
