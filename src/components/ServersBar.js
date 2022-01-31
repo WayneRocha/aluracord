@@ -12,7 +12,7 @@ export default function ServersBar({onServerChange}){
     useEffect(async() => {
         const serverlist = await getServers();
         setServersList(serverlist);
-    })
+    }, []);
     return (
         <Box
             styleSheet={{
