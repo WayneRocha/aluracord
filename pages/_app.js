@@ -14,6 +14,7 @@ function GlobalStyle() {
           min-height: 100vh;
           display: flex;
           flex: 1;
+          font-family: 'Open Sans', sans-serif;
         }
         #__next {
           flex: 1;
