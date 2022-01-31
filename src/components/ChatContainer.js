@@ -13,6 +13,7 @@ export default function ChatContainer(){
     const currentServer = chatContext.server;
     const [message, setMessage] = useState('');
     const [messageList, setMessageList] = useState([]);
+    const [sendButtonEnable, setSendButtonEnable] = useState(message.length > 0);
     const [showSkeletons, setShowSkeletons] = useState(true);
 
     const sendMessageHandler = (server, messageContent, messageType) => {
@@ -28,7 +29,6 @@ export default function ChatContainer(){
         setMessageList((messageList) => {
             return [message, ...messageList];
         });
-        setMessage('');
     }
 
     useEffect(async() => {
@@ -126,12 +126,14 @@ export default function ChatContainer(){
                         }}
                         onChange={(event) => {
                             setMessage(event.target.value);
+                            setSendButtonEnable(event.target.value.length > 0);
                         }}
                         onKeyPress={(event) => {
-                            event.preventDefault();
                             if (event.key === 'Enter' && (!event.shiftKey)) {
+                                event.preventDefault();
                                 const messageType = 'message';
                                 sendMessageHandler(currentServer.id, message, messageType);
+                                setMessage('');
                             }
                         }}
                     />
@@ -161,6 +163,7 @@ export default function ChatContainer(){
                         }}
                         iconName="FaPaperPlane"
                         type="button"
+                        disabled={!sendButtonEnable}
                         onClick={(event) => {
                             event.preventDefault();
                             const messageType = 'message';
