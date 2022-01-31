@@ -100,8 +100,7 @@ export default function ChatContainer(){
                     <UserContext.Provider value={loggedUser}>
                         <MessageList messageListState={[messageList, setMessageList]} />
                     </UserContext.Provider>
-                )
-                }
+                )}
 
                 <Box
                     as="form"
@@ -129,8 +128,8 @@ export default function ChatContainer(){
                             setMessage(event.target.value);
                         }}
                         onKeyPress={(event) => {
+                            event.preventDefault();
                             if (event.key === 'Enter' && (!event.shiftKey)) {
-                                event.preventDefault();
                                 const messageType = 'message';
                                 sendMessageHandler(currentServer.id, message, messageType);
                             }
