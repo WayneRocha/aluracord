@@ -6,7 +6,7 @@ import { ChatContext } from './Contexts';
 import ServerCard from "../components/ServerCard";
 
 export default function ServersBar({onServerChange}){
-    const currentServer = useContext(ChatContext);
+    const { server: currentServer } = useContext(ChatContext);
     const [serversList, setServersList] = useState([]);
 
     useEffect(async() => {
@@ -24,13 +24,14 @@ export default function ServersBar({onServerChange}){
                 backgroundColor: appConfig.theme.colors.neutrals[600],
                 borderRadius: '20px',
                 padding: '8px',
-                margin: ' auto 24px auto 0px',
+                margin: ' auto 16px auto 0px',
             }}
         >
             {
                 serversList.map(server => {
                     return (
                         <Box
+                            key={server.id}
                             styleSheet={{
                                 margin: '4px auto'
                             }}
@@ -39,7 +40,6 @@ export default function ServersBar({onServerChange}){
                             }}
                         >
                             <ServerCard
-                                key={server.id}
                                 name={server.name}
                                 description={server.description}
                                 server_thumb={server.server_thumb}

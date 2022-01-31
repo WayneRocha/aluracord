@@ -6,11 +6,11 @@ export default function ServerCard({name, description, server_thumb, isSelected}
         <Box
             title={description}
             styleSheet={{
-                width: '70px',
-                height: '70px',
+                width: '50px',
+                height: '50px',
                 backgroundColor: appConfig.theme.colors.neutrals["900"],
-                border: `3px solid ${appConfig.theme.colors.neutrals[(isSelected) ? "300" : "900"]}`,
-                borderRadius: (isSelected) ? '20px' : '50%',
+                border: `3px solid ${appConfig.theme.colors.neutrals[(isSelected) ? "200" : "900"]}`,
+                borderRadius: (isSelected) ? '15px' : '50%',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
