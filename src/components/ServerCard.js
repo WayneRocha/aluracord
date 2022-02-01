@@ -23,7 +23,7 @@ export default function ServerCard({name, description, server_thumb, isSelected}
 
             { server_thumb && <Image src={server_thumb} styleSheet={{objectFit: 'cover'}}></Image> }
             { !server_thumb && (
-                <Text src={server_thumb} tag='strong' styleSheet={{fontSize: '2rem'}}>
+                <Text src={server_thumb} tag='strong' styleSheet={{fontSize: '1rem'}}>
                     {name.split(' ').map((word) => word.substring(0, 1)).join(' ')}
                 </Text>
             )}
