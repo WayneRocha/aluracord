@@ -25,6 +25,7 @@ export default function ServersBar({onServerChange}){
                 borderRadius: '20px',
                 padding: '8px',
                 margin: ' auto 16px auto 0px',
+                overflowY: 'scroll'
             }}
         >
             {
