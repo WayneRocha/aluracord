@@ -4,4 +4,4 @@
 
 ## Sobre o projeto
 
-Chat em tempo real em servers, similar ao discord. o projeto foi feito durante a [https://github.com/alura-challenges/aluracord-matrix](Imersão-React da Alura)
+Chat em tempo real em servers, similar ao discord. o projeto foi feito durante a [Imersão-React da Alura](https://github.com/alura-challenges/aluracord-matrix)
