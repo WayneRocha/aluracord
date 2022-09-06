@@ -24,7 +24,7 @@ export default function PaginaInicial() {
         styleSheet={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           backgroundColor: appConfig.theme.colors.primary[500],
-          backgroundImage: 'url(https://i.ytimg.com/vi/VRMLxozIvv4/maxresdefault.jpg)',
+          backgroundImage: 'url(https://th.bing.com/th/id/R.f4928224c3f0b084b5d765a5654ebd7a?rik=5gUhKPqfNSAOnQ&riu=http%3a%2f%2flounge.obviousmag.org%2fpilulas_da_literatura%2fmontain01.jpg&ehk=1OCCbCjLMB3Uf0%2bxEfFknwqLhiK6EHKnvDI6y8FxGD4%3d&risl=&pid=ImgRaw&r=0)',
           backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
         }}
       >
